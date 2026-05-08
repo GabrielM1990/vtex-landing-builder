@@ -15,6 +15,7 @@
     "build": "npm run build --workspace=backend && npm run build --workspace=frontend",
     "build:frontend": "npm run build --workspace=frontend",
     "build:backend": "npm run build --workspace=backend",
+    "vercel-build": "npm run build:backend",
     "db:generate": "npm run db:generate --workspace=backend",
     "db:migrate": "npm run db:migrate --workspace=backend",
     "start:production": "NODE_ENV=production node backend/dist/index.js",
