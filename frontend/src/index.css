@@ -1,0 +1,49 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-gray-50 text-gray-900;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-vtex-pink text-white px-4 py-2 rounded-lg font-medium 
+           hover:bg-opacity-90 transition-all disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+  
+  .btn-secondary {
+    @apply bg-white text-gray-700 border border-gray-300 px-4 py-2 rounded-lg font-medium 
+           hover:bg-gray-50 transition-all;
+  }
+  
+  .card {
+    @apply bg-white rounded-xl shadow-sm border border-gray-200 p-4;
+  }
+  
+  .input {
+    @apply w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none 
+           focus:ring-2 focus:ring-vtex-pink focus:border-transparent;
+  }
+  
+  .sidebar-item {
+    @apply flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-all
+           hover:bg-gray-100 text-gray-700;
+  }
+  
+  .sidebar-item.active {
+    @apply bg-vtex-pink bg-opacity-10 text-vtex-pink;
+  }
+}
+
+/* Drag and Drop Styles */
+.dragging {
+  opacity: 0.5;
+}
+
+.drag-over {
+  background-color: rgba(247, 25, 99, 0.1);
+  border: 2px dashed #f71963;
+}

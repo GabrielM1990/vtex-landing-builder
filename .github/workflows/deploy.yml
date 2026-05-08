@@ -1,0 +1,37 @@
+name: Deploy VTEX Theme
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: Deploy to VTEX IO
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install VTEX Toolbelt
+        run: npm install -g vtex@latest
+
+      - name: Login to VTEX
+        uses: vtex/action-toolbelt@v3
+        with:
+          account: ${{ secrets.VTEX_ACCOUNT }}
+          appKey: ${{ secrets.VTEX_APP_KEY }}
+          appToken: ${{ secrets.VTEX_APP_TOKEN }}
+          workspace: master
+          authenticate: true
+
+      - name: Deploy to production
+        run: vtex deploy --yes

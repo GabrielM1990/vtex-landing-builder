@@ -1,0 +1,36 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Landing {
+  id          String         @id @default(cuid())
+  name        String
+  route       String         @unique
+  blocks      String
+  status      String         @default("draft") // "draft" | "deployed"
+  deployedAt  DateTime?
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+  deployments Deployment[]
+
+  @@index([status])
+  @@index([route])
+}
+
+model Deployment {
+  id          String   @id @default(cuid())
+  landingId   String
+  landing     Landing  @relation(fields: [landingId], references: [id])
+  status      String   // "pending" | "success" | "failed"
+  commitSha   String?
+  message     String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([landingId])
+}

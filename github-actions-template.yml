@@ -1,0 +1,79 @@
+name: Deploy VTEX Theme
+
+on:
+  push:
+    branches: [main, master, customlanding]
+  workflow_dispatch:
+    inputs:
+      workspace:
+        description: 'VTEX Workspace to deploy to'
+        required: true
+        default: 'master'
+        type: choice
+        options:
+          - master
+          - customlanding
+          - develop
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install VTEX Toolbelt
+        run: npm install -g vtex@latest
+
+      - name: Determine workspace from branch
+        id: workspace
+        run: |
+          if [[ "${{ github.ref }}" == "refs/heads/customlanding" ]]; then
+            echo "workspace=customlanding" >> $GITHUB_OUTPUT
+          else
+            echo "workspace=master" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Login to VTEX
+        uses: vtex/action-toolbelt@v3
+        with:
+          account: ${{ secrets.VTEX_ACCOUNT }}
+          appKey: ${{ secrets.VTEX_APP_KEY }}
+          appToken: ${{ secrets.VTEX_APP_TOKEN }}
+          workspace: ${{ steps.workspace.outputs.workspace }}
+          authenticate: true
+
+      - name: Get app info from manifest
+        id: appinfo
+        run: |
+          VENDOR=$(node -p "require('./manifest.json').vendor")
+          NAME=$(node -p "require('./manifest.json').name")
+          VERSION=$(node -p "require('./manifest.json').version")
+          echo "vendor=${VENDOR}" >> $GITHUB_OUTPUT
+          echo "name=${NAME}" >> $GITHUB_OUTPUT
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+          echo "📦 App: ${VENDOR}.${NAME}@${VERSION}"
+
+      - name: Deploy/Publish to workspace
+        run: |
+          echo "Branch: ${{ github.ref_name }}"
+          echo "Workspace: ${{ steps.workspace.outputs.workspace }}"
+          APP_NAME="${{ steps.appinfo.outputs.vendor }}.${{ steps.appinfo.outputs.name }}"
+          
+          if [[ "${{ steps.workspace.outputs.workspace }}" == "master" ]]; then
+            echo " Deploying to production: master"
+            vtex deploy --yes
+          else
+            echo " Switching to workspace: ${{ steps.workspace.outputs.workspace }}"
+            echo "y" | vtex workspace use ${{ steps.workspace.outputs.workspace }} || vtex workspace create ${{ steps.workspace.outputs.workspace }}
+            echo " Publishing to workspace: ${{ steps.workspace.outputs.workspace }}"
+            vtex publish --yes
+            echo " Installing app in workspace..."
+            vtex install
+          fi

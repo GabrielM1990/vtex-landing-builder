@@ -1,0 +1,28 @@
+{
+  "name": "vtex-landing-builder",
+  "version": "1.0.0",
+  "description": "Herramienta externa para crear landing pages autoadministrables en VTEX IO",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
+  "scripts": {
+    "install:all": "npm install && npm install --workspace=backend && npm install --workspace=frontend",
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:frontend": "npm run dev --workspace=frontend",
+    "dev:backend": "npm run dev --workspace=backend",
+    "build": "npm run build --workspace=backend && npm run build --workspace=frontend",
+    "build:frontend": "npm run build --workspace=frontend",
+    "build:backend": "npm run build --workspace=backend",
+    "db:generate": "npm run db:generate --workspace=backend",
+    "db:migrate": "npm run db:migrate --workspace=backend",
+    "start:production": "NODE_ENV=production node backend/dist/index.js",
+    "setup:production": "node -e \"const os = require('os'); const isWindows = os.platform() === 'win32'; const script = isWindows ? 'scripts/deploy-production.bat' : 'scripts/deploy-production.sh'; const { execSync } = require('child_process'); try { execSync(isWindows ? script : `chmod +x ${script} && ./${script}`, { stdio: 'inherit' }); } catch (error) { console.error('Error:', error.message); process.exit(1); }\"",
+    "logs:production": "pm2 logs vtex-landing-builder",
+    "restart:production": "pm2 restart vtex-landing-builder"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.0"
+  }
+}
