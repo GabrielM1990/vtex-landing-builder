@@ -9,7 +9,16 @@
       "src": "frontend/package.json", 
       "use": "@vercel/static-build",
       "config": {
-        "distDir": "dist"
+        "buildCommand": "npm run vercel-build",
+        "installCommand": "npm run install:all",
+        "outputDirectory": "frontend/dist",
+        "framework": "vite",
+        "rewrites": [
+          {
+            "source": "/(.*)",
+            "destination": "/"
+          }
+        ]
       }
     }
   ],
