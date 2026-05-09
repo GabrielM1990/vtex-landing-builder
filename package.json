@@ -1,29 +1,36 @@
 {
-  "name": "vtex-landing-builder",
+  "name": "vtex-landing-builder-frontend",
   "version": "1.0.0",
-  "description": "Herramienta externa para crear landing pages autoadministrables en VTEX IO",
-  "private": true,
-  "workspaces": [
-    "frontend",
-    "backend"
-  ],
+  "type": "module",
   "scripts": {
-    "install:all": "npm install && npm install --workspace=backend && npm install --workspace=frontend",
-    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
-    "dev:frontend": "npm run dev --workspace=frontend",
-    "dev:backend": "npm run dev --workspace=backend",
-    "build": "npm run build:backend && npm run build:frontend",
-    "build:frontend": "npm run build --workspace=frontend",
-    "build:backend": "npm run build --workspace=backend",
-    "vercel-build": "npm run build:backend && npm run build:frontend",
-    "db:generate": "npm run db:generate --workspace=backend",
-    "db:migrate": "npm run db:migrate --workspace=backend",
-    "start:production": "NODE_ENV=production node backend/dist/index.js",
-    "setup:production": "node -e \"const os = require('os'); const isWindows = os.platform() === 'win32'; const script = isWindows ? 'scripts/deploy-production.bat' : 'scripts/deploy-production.sh'; const { execSync } = require('child_process'); try { execSync(isWindows ? script : `chmod +x ${script} && ./${script}`, { stdio: 'inherit' }); } catch (error) { console.error('Error:', error.message); process.exit(1); }\"",
-    "logs:production": "pm2 logs vtex-landing-builder",
-    "restart:production": "pm2 restart vtex-landing-builder"
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "vercel-build": "npm run build"
+  },
+  "dependencies": {
+    "@hello-pangea/dnd": "16.5.0",
+    "axios": "1.6.2",
+    "lucide-react": "0.294.0",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "react-hot-toast": "2.4.1",
+    "react-router-dom": "6.20.0",
+    "zustand": "4.4.7"
   },
   "devDependencies": {
-    "concurrently": "^8.2.0"
+    "@types/react": "18.2.43",
+    "@types/react-dom": "18.2.17",
+    "@typescript-eslint/eslint-plugin": "6.14.0",
+    "@typescript-eslint/parser": "6.14.0",
+    "@vitejs/plugin-react": "4.2.1",
+    "autoprefixer": "10.4.16",
+    "eslint": "8.55.0",
+    "eslint-plugin-react-hooks": "4.6.0",
+    "eslint-plugin-react-refresh": "0.4.5",
+    "postcss": "8.4.32",
+    "tailwindcss": "3.3.6",
+    "typescript": "5.3.0",
+    "vite": "5.4.0"
   }
 }
