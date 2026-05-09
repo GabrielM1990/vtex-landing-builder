@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@octokit/rest": "^20.1.2",
-    "@prisma/client": "^5.22.0",
+    "@prisma/client": "^7.8.0",
     "cors": "^2.8.6",
     "dotenv": "^16.6.1",
     "express": "^4.22.1",
